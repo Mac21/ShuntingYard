@@ -1,4 +1,7 @@
+#!/usr/bin/python3
+
 from sys import argv
+
 
 def opprecedence(operator):
     if operator in ('+', '-'):
@@ -9,28 +12,33 @@ def opprecedence(operator):
         return 4
     return 0
 
+
 def shuntingyard(sexp):
     opstack = []
     output = []
     for char in sexp:
         curprec = opprecedence(char)
-        print("Current char: ", char)
-        print("Current prec: ", curprec)
         if curprec > 0:
             output.append(" ")
             while len(opstack) > 0:
-                topsprec = opprecedence(opstack[len(opstack) - 1])
+                topsprec = opprecedence(opstack[-1])
                 if topsprec >= curprec:
                     output.append(opstack.pop())
                     output.append(" ")
                 else:
                     break
             opstack.append(char)
+        elif char == "(":
+            opstack.append(char)
+        elif char == ")":
+            while len(opstack) > 0:
+                if opstack[-1] == "(":
+                    opstack.pop()
+                    break
+                output.append(" ")
+                output.append(opstack.pop())
         else:
             output.append(char)
-
-        print("Current opstack: ", opstack)
-        print("Current output: ", output)
 
     for op in opstack[::-1]:
         output.append(" ")
